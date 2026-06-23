@@ -21,8 +21,6 @@
 
   *{ margin:0; padding:0; box-sizing:border-box; }
 
-  html,body{ height:100%; }
-
   body{
     font-family:'Inter', sans-serif;
     color:var(--texto);
@@ -31,20 +29,20 @@
       radial-gradient(900px 600px at 110% 20%, rgba(103,58,183,.55), transparent 55%),
       radial-gradient(700px 500px at 50% 120%, rgba(245,197,24,.10), transparent 60%),
       linear-gradient(160deg, #1E0F38 0%, #2C1656 55%, #3A1D63 100%);
-    min-height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:32px 18px;
+    background-attachment:fixed;
+    /* layout em bloco: rola naturalmente e NUNCA corta o topo/rodapé */
+    min-height:100vh;
+    padding:clamp(16px, 4vh, 40px) 16px;
   }
 
   .card{
     width:100%;
     max-width:540px;
+    margin:0 auto;
     background:linear-gradient(165deg, rgba(58,29,99,.85), rgba(34,17,64,.92));
     border:1px solid rgba(245,197,24,.22);
     border-radius:26px;
-    padding:42px 38px 38px;
+    padding:clamp(26px, 4vw, 38px) clamp(22px, 4vw, 38px) clamp(26px, 4vw, 34px);
     box-shadow:0 30px 80px -20px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);
     backdrop-filter:blur(6px);
     position:relative;
@@ -59,7 +57,7 @@
   }
 
   .logo-wrap{ text-align:center; margin-bottom:8px; }
-  .logo-wrap img{ width:230px; max-width:80%; height:auto; }
+  .logo-wrap img{ width:clamp(170px, 52%, 230px); height:auto; display:block; margin:0 auto; }
 
   .selo{
     display:inline-flex; align-items:center; gap:7px;
@@ -172,12 +170,18 @@
     padding:16px;
     cursor:pointer;
     transition:transform .12s, box-shadow .2s, filter .2s;
-    box-shadow:0 14px 30px -10px rgba(245,197,24,.55);
     display:flex; align-items:center; justify-content:center; gap:10px;
+    animation:pulsar 1.5s ease-in-out infinite;
   }
-  button.enviar:hover{ transform:translateY(-2px); filter:brightness(1.04); box-shadow:0 18px 36px -10px rgba(245,197,24,.6); }
+  /* pulso que chama atenção pro botão */
+  @keyframes pulsar{
+    0%, 100%{ box-shadow:0 14px 30px -10px rgba(245,197,24,.5); transform:scale(1); }
+    50%{ box-shadow:0 16px 40px -8px rgba(245,197,24,.95), 0 0 0 6px rgba(245,197,24,.16); transform:scale(1.025); }
+  }
+  @media (prefers-reduced-motion:reduce){ button.enviar{ animation:none; } }
+  button.enviar:hover{ animation:none; transform:translateY(-2px); filter:brightness(1.04); box-shadow:0 18px 36px -10px rgba(245,197,24,.6); }
   button.enviar:active{ transform:translateY(0); }
-  button.enviar:disabled{ cursor:default; filter:saturate(.6) brightness(.9); transform:none; box-shadow:none; }
+  button.enviar:disabled{ animation:none; cursor:default; filter:saturate(.6) brightness(.9); transform:none; box-shadow:none; }
 
   .spinner{
     width:18px; height:18px; border-radius:50%;
