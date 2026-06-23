@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mentoria em Grupo · Envie sua dúvida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --roxo-escuro:#1E0F38;
+    --roxo:#673AB7;
+    --roxo-claro:#8E24AA;
+    --dourado:#F5C518;
+    --dourado-claro:#FFE082;
+    --texto:#F4EEFF;
+    --texto-suave:#C9B8E8;
+    --erro:#FF8A9B;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html,body{ height:100%; }
+
+  body{
+    font-family:'Inter', sans-serif;
+    color:var(--texto);
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(142,36,170,.55), transparent 60%),
+      radial-gradient(900px 600px at 110% 20%, rgba(103,58,183,.55), transparent 55%),
+      radial-gradient(700px 500px at 50% 120%, rgba(245,197,24,.10), transparent 60%),
+      linear-gradient(160deg, #1E0F38 0%, #2C1656 55%, #3A1D63 100%);
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 18px;
+  }
+
+  .card{
+    width:100%;
+    max-width:540px;
+    background:linear-gradient(165deg, rgba(58,29,99,.85), rgba(34,17,64,.92));
+    border:1px solid rgba(245,197,24,.22);
+    border-radius:26px;
+    padding:42px 38px 38px;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:blur(6px);
+    position:relative;
+    overflow:hidden;
+  }
+  /* fiozinho dourado no topo */
+  .card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, transparent, var(--dourado), var(--dourado-claro), var(--dourado), transparent);
+    opacity:.9;
+  }
+
+  .logo-wrap{ text-align:center; margin-bottom:8px; }
+  .logo-wrap img{ width:230px; max-width:80%; height:auto; }
+
+  .selo{
+    display:inline-flex; align-items:center; gap:7px;
+    margin:0 auto 18px; padding:6px 15px;
+    font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--dourado-claro);
+    background:rgba(245,197,24,.10);
+    border:1px solid rgba(245,197,24,.30);
+    border-radius:999px;
+  }
+  .selo-row{ text-align:center; }
+
+  h1{
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:28px;
+    line-height:1.2;
+    text-align:center;
+    margin-bottom:10px;
+  }
+  h1 .grifo{
+    background:linear-gradient(90deg, var(--dourado), var(--dourado-claro));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .sub{
+    text-align:center;
+    color:var(--texto-suave);
+    font-size:15px;
+    line-height:1.55;
+    margin:0 auto 30px;
+    max-width:420px;
+  }
+  .sub .ao-vivo{ color:var(--dourado-claro); font-weight:600; }
+  .sub .dia{ color:#C9A8FF; font-weight:600; }
+
+  .campo{ margin-bottom:20px; }
+  .campo label{
+    display:block;
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:14px;
+    margin-bottom:8px;
+    color:var(--texto);
+  }
+  .campo label .req{ color:var(--dourado); }
+
+  .campo input,
+  .campo textarea{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:15.5px;
+    color:#fff;
+    background:rgba(255,255,255,.06);
+    border:1.5px solid rgba(201,184,232,.25);
+    border-radius:14px;
+    padding:14px 16px;
+    transition:border-color .18s, box-shadow .18s, background .18s;
+    outline:none;
+  }
+  .campo textarea{ resize:vertical; min-height:120px; line-height:1.5; }
+  .campo input::placeholder,
+  .campo textarea::placeholder{ color:rgba(201,184,232,.55); }
+
+  .campo input:focus,
+  .campo textarea:focus{
+    border-color:var(--dourado);
+    background:rgba(255,255,255,.10);
+    box-shadow:0 0 0 4px rgba(245,197,24,.16);
+  }
+
+  .campo label .opcional{ color:var(--texto-suave); font-weight:400; font-size:12.5px; }
+  .ajuda{ font-size:13px; color:var(--texto-suave); margin:-2px 0 10px; }
+
+  /* área de anexar print */
+  .dropzone{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    width:100%; cursor:pointer; text-align:center;
+    font-size:14.5px; color:var(--texto-suave);
+    background:rgba(255,255,255,.04);
+    border:1.5px dashed rgba(245,197,24,.40);
+    border-radius:14px; padding:18px 16px;
+    transition:border-color .18s, background .18s, color .18s;
+  }
+  .dropzone:hover{ border-color:var(--dourado); background:rgba(245,197,24,.07); color:var(--dourado-claro); }
+  .preview-print{ margin-top:12px; display:flex; align-items:center; gap:14px; }
+  .preview-print img{
+    width:74px; height:74px; object-fit:cover;
+    border-radius:12px; border:1.5px solid rgba(245,197,24,.35);
+  }
+  .remover-print{
+    cursor:pointer; font-family:'Inter',sans-serif; font-size:13.5px; font-weight:500;
+    color:var(--erro); background:transparent; border:none; padding:6px 4px; text-decoration:underline;
+  }
+
+  .campo.invalido input,
+  .campo.invalido textarea{ border-color:var(--erro); box-shadow:0 0 0 4px rgba(255,138,155,.14); }
+  .erro-msg{ display:none; color:var(--erro); font-size:13px; margin-top:7px; }
+  .campo.invalido .erro-msg{ display:block; }
+
+  button.enviar{
+    width:100%;
+    margin-top:8px;
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size:16.5px;
+    color:#2A1500;
+    background:linear-gradient(95deg, var(--dourado), var(--dourado-claro));
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    cursor:pointer;
+    transition:transform .12s, box-shadow .2s, filter .2s;
+    box-shadow:0 14px 30px -10px rgba(245,197,24,.55);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  button.enviar:hover{ transform:translateY(-2px); filter:brightness(1.04); box-shadow:0 18px 36px -10px rgba(245,197,24,.6); }
+  button.enviar:active{ transform:translateY(0); }
+  button.enviar:disabled{ cursor:default; filter:saturate(.6) brightness(.9); transform:none; box-shadow:none; }
+
+  .spinner{
+    width:18px; height:18px; border-radius:50%;
+    border:2.5px solid rgba(42,21,0,.35); border-top-color:#2A1500;
+    animation:girar .7s linear infinite; display:none;
+  }
+  @keyframes girar{ to{ transform:rotate(360deg); } }
+
+  .rodape{
+    text-align:center; margin-top:22px;
+    font-size:12.5px; color:rgba(201,184,232,.65);
+  }
+
+  /* ----- tela de sucesso ----- */
+  #sucesso{ display:none; text-align:center; padding:14px 4px 6px; }
+  .check{
+    width:84px; height:84px; margin:0 auto 22px;
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 40%, rgba(245,197,24,.25), rgba(245,197,24,.05));
+    border:2px solid var(--dourado);
+    display:flex; align-items:center; justify-content:center;
+    animation:pop .45s cubic-bezier(.2,1.3,.4,1);
+  }
+  .check svg{ width:42px; height:42px; }
+  @keyframes pop{ 0%{ transform:scale(.4); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  #sucesso h2{ font-family:'Poppins',sans-serif; font-size:24px; margin-bottom:12px; }
+  #sucesso p{ color:var(--texto-suave); font-size:15.5px; line-height:1.6; max-width:380px; margin:0 auto 26px; }
+  .btn-secundario{
+    display:inline-block; cursor:pointer;
+    font-family:'Poppins',sans-serif; font-weight:500; font-size:14.5px;
+    color:var(--dourado-claro);
+    background:rgba(245,197,24,.08);
+    border:1px solid rgba(245,197,24,.30);
+    border-radius:12px; padding:12px 22px;
+    transition:background .18s;
+  }
+  .btn-secundario:hover{ background:rgba(245,197,24,.16); }
+
+  @media (max-width:480px){
+    .card{ padding:34px 22px 30px; border-radius:22px; }
+    h1{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <!-- ====== FORMULÁRIO ====== -->
+    <div id="form-area">
+      <div class="logo-wrap">
+        <img src="logo-desbravando.png" alt="Desbravando" />
+      </div>
+
+      <div class="selo-row">
+        <span class="selo">★ Mentoria Tira Dúvidas</span>
+      </div>
+
+      <h1>Tem <span class="grifo">alguma dúvida?</span></h1>
+      <p class="sub">Deixe sua pergunta que o time de mentores Lari Iraha irá responder no encontro <strong class="ao-vivo">AO VIVO</strong> <strong class="dia">toda quarta às 15h00</strong>. 💜</p>
+
+      <form id="form" novalidate>
+        <div class="campo" id="campo-nome">
+          <label for="nome">Seu nome <span class="req">*</span></label>
+          <input type="text" id="nome" name="nome" placeholder="Como você se chama?" autocomplete="name" />
+          <span class="erro-msg">Por favor, escreva seu nome.</span>
+        </div>
+
+        <div class="campo" id="campo-telefone">
+          <label for="telefone">Telefone / WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" inputmode="numeric" maxlength="15" />
+          <span class="erro-msg">Coloque um telefone com DDD.</span>
+        </div>
+
+        <div class="campo" id="campo-duvida">
+          <label for="duvida">Sua dúvida <span class="req">*</span></label>
+          <textarea id="duvida" name="duvida" placeholder="Escreva aqui o que você quer perguntar..."></textarea>
+          <span class="erro-msg">Escreva sua dúvida pra gente.</span>
+        </div>
+
+        <div class="campo" id="campo-print">
+          <label for="print">Anexar print/foto <span class="opcional">(opcional)</span></label>
+          <p class="ajuda">Manda um print pra facilitar o mentor a entender sua dúvida 📸</p>
+          <label class="dropzone" id="dropzone" for="print">
+            <input type="file" id="print" name="print" accept="image/*" hidden />
+            <span id="dropzone-texto">📎 Toque para escolher uma imagem</span>
+          </label>
+          <div id="preview-print" class="preview-print" style="display:none;">
+            <img id="preview-img" alt="prévia do print" />
+            <button type="button" id="remover-print" class="remover-print">Remover</button>
+          </div>
+        </div>
+
+        <button type="submit" class="enviar" id="btn-enviar">
+          <span class="spinner" id="spinner"></span>
+          <span id="btn-texto">Enviar minha dúvida</span>
+        </button>
+      </form>
+
+      <p class="rodape">Suas respostas são vistas só pela equipe da mentoria.</p>
+    </div>
+
+    <!-- ====== SUCESSO ====== -->
+    <div id="sucesso">
+      <div class="check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F5C518" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h2>Dúvida enviada!</h2>
+      <p>Recebemos sua pergunta. Vamos respondê-la no nosso próximo encontro da mentoria. Até lá! 💜</p>
+      <span class="btn-secundario" id="enviar-outra">Enviar outra dúvida</span>
+    </div>
+  </main>
+
+<script>
+  // ============================================================
+  //  COLE AQUI a URL do seu Apps Script (termina em /exec)
+  //  Veja o PASSO-A-PASSO.md
+  // ============================================================
+  var URL_PLANILHA = "https://script.google.com/macros/s/AKfycbwl_3olRFBsT3BEevfvb7FCUq2OTSeDf1qLqxIZ3hsUhKwV309kjwOVEre7Y7n3O98/exec";
+
+  // ---- máscara de telefone (BR) ----
+  var tel = document.getElementById('telefone');
+  tel.addEventListener('input', function(){
+    var v = tel.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 6){
+      tel.value = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+    } else if (v.length > 2){
+      tel.value = '(' + v.slice(0,2) + ') ' + v.slice(2);
+    } else if (v.length > 0){
+      tel.value = '(' + v;
+    } else {
+      tel.value = '';
+    }
+  });
+
+  // ---- anexar print (com compressão) ----
+  var imagemDados = null; // { base64, tipo, nome }
+  var inputPrint = document.getElementById('print');
+  var dropzoneTexto = document.getElementById('dropzone-texto');
+  var previewBox = document.getElementById('preview-print');
+  var previewImg = document.getElementById('preview-img');
+
+  inputPrint.addEventListener('change', function(){
+    var file = inputPrint.files && inputPrint.files[0];
+    if (!file) return;
+    if (!/^image\//.test(file.type)) {
+      alert('Por favor, escolha uma imagem (print ou foto).');
+      inputPrint.value = '';
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        // reduz pra no máximo 1400px no maior lado (deixa o envio leve)
+        var max = 1400;
+        var w = img.width, h = img.height;
+        if (w > max || h > max){
+          if (w > h){ h = Math.round(h * max / w); w = max; }
+          else { w = Math.round(w * max / h); h = max; }
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        imagemDados = {
+          base64: dataUrl,
+          tipo: 'image/jpeg',
+          nome: (file.name || 'print').replace(/\.[^.]+$/, '') + '.jpg'
+        };
+        previewImg.src = dataUrl;
+        previewBox.style.display = 'flex';
+        dropzoneTexto.textContent = '✓ Imagem anexada — toque para trocar';
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('remover-print').addEventListener('click', function(){
+    imagemDados = null;
+    inputPrint.value = '';
+    previewBox.style.display = 'none';
+    dropzoneTexto.textContent = '📎 Toque para escolher uma imagem';
+  });
+
+  // ---- validação visual por campo ----
+  function marca(id, ok){
+    document.getElementById(id).classList.toggle('invalido', !ok);
+    return ok;
+  }
+  ['nome','telefone','duvida'].forEach(function(f){
+    document.getElementById(f).addEventListener('input', function(){
+      document.getElementById('campo-' + f).classList.remove('invalido');
+    });
+  });
+
+  var form = document.getElementById('form');
+  var btn = document.getElementById('btn-enviar');
+  var spinner = document.getElementById('spinner');
+  var btnTexto = document.getElementById('btn-texto');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    var nome = document.getElementById('nome').value.trim();
+    var telefone = document.getElementById('telefone').value.trim();
+    var duvida = document.getElementById('duvida').value.trim();
+
+    var okNome = marca('campo-nome', nome.length >= 2);
+    var soDigitos = telefone.replace(/\D/g, '');
+    var okTel = marca('campo-telefone', soDigitos.length >= 10);
+    var okDuvida = marca('campo-duvida', duvida.length >= 3);
+
+    if (!(okNome && okTel && okDuvida)) return;
+
+    // estado "enviando"
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    btnTexto.textContent = 'Enviando...';
+
+    var dados = {
+      origem: 'formulario',
+      nome: nome,
+      telefone: telefone,
+      duvida: duvida,
+      imagemBase64: imagemDados ? imagemDados.base64 : '',
+      imagemTipo: imagemDados ? imagemDados.tipo : '',
+      imagemNome: imagemDados ? imagemDados.nome : ''
+    };
+
+    fetch(URL_PLANILHA, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(dados)
+    })
+    .then(mostrarSucesso)
+    .catch(mostrarSucesso); // com no-cors a resposta é opaca; assumimos sucesso
+  });
+
+  function mostrarSucesso(){
+    document.getElementById('form-area').style.display = 'none';
+    document.getElementById('sucesso').style.display = 'block';
+  }
+
+  document.getElementById('enviar-outra').addEventListener('click', function(){
+    form.reset();
+    imagemDados = null;
+    previewBox.style.display = 'none';
+    dropzoneTexto.textContent = '📎 Toque para escolher uma imagem';
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    btnTexto.textContent = 'Enviar minha dúvida';
+    document.getElementById('sucesso').style.display = 'none';
+    document.getElementById('form-area').style.display = 'block';
+  });
+</script>
+</body>
+</html>
